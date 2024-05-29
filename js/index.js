@@ -149,7 +149,7 @@ myChart.on('click', function (params) {
       to: toCity
     };
   
-    fetch('https://run.mocky.io/v3/da278035-00be-4cfe-a488-2709351a2e62', {
+    fetch('https://run.mocky.io/v3/c9304522-8e77-43ff-97bb-32844bab1bf3', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -312,6 +312,99 @@ myChart.on('click', function (params) {
 })();
 
 
+document.addEventListener('DOMContentLoaded', function() {
+  var modeInputs = document.querySelectorAll('input[name="mode"]');
+  var features = {
+    user: document.querySelectorAll('.user-features'),
+    admin: document.querySelectorAll('.admin-features'),
+    leader: document.querySelectorAll('.leader-features')
+  };
+  var noFeatureHints = {
+    user: document.querySelectorAll('.no-user-features'),
+    admin: document.querySelectorAll('.no-admin-features'),
+    leader: document.querySelectorAll('.no-leader-features')
+  };
+
+  // 从sessionStorage获取保存的模式，如果没有则默认为'user'
+  var savedMode = sessionStorage.getItem('selectedMode') || 'user';
+
+  // 默认选中'user'模式，并更新界面
+  modeInputs.forEach(function(input) {
+    if (input.value === savedMode) {
+      input.checked = true;
+    }
+  });
+  updateFeaturesDisplay();
+
+  function updateFeaturesDisplay() {
+    // 首先获取当前选中的模式
+    var modeInputs = document.querySelectorAll('input[name="mode"]');
+    var currentMode = 'user'; // 默认模式为 'user'
+    modeInputs.forEach(function(input) {
+      if (input.checked) {
+        currentMode = input.value;
+      }
+    });
+  
+    // 隐藏所有功能和提示
+    for (var key in features) {
+      features[key].forEach(function(feature) {
+        feature.style.display = 'none';
+      });
+    }
+    for (var key in noFeatureHints) {
+      noFeatureHints[key].forEach(function(hint) {
+        hint.style.display = 'block';
+      });
+    }
+  
+    // 根据当前选中的模式显示相应的功能，并隐藏对应的noFeatureHint提示
+    switch (currentMode) {
+      case 'user':
+        noFeatureHints.user.forEach(function(hint) { hint.style.display = 'none'; });
+        features.user.forEach(function(userFeature) {
+          userFeature.style.display = 'block';
+        });
+        break;
+      case 'admin':
+        noFeatureHints.user.forEach(function(hint) { hint.style.display = 'none'; });
+        noFeatureHints.admin.forEach(function(hint) { hint.style.display = 'none'; });
+        features.user.forEach(function(userFeature) {
+          userFeature.style.display = 'block';
+        });
+        features.admin.forEach(function(adminFeature) {
+          adminFeature.style.display = 'block';
+        });
+        break;
+      case 'leader':
+        noFeatureHints.user.forEach(function(hint) { hint.style.display = 'none'; });
+        noFeatureHints.admin.forEach(function(hint) { hint.style.display = 'none'; });
+        noFeatureHints.leader.forEach(function(hint) { hint.style.display = 'none'; });
+        features.user.forEach(function(userFeature) {
+          userFeature.style.display = 'block';
+        });
+        features.admin.forEach(function(adminFeature) {
+          adminFeature.style.display = 'block';
+        });
+        features.leader.forEach(function(leaderFeature) {
+          leaderFeature.style.display = 'block';
+        });
+        break;
+    }
+  }
+  
+  // 监听模式切换
+  modeInputs.forEach(function(input) {
+    input.addEventListener('change', function() {
+      // 更新sessionStorage
+      sessionStorage.setItem('selectedMode', this.value);
+      // 更新界面
+      updateFeaturesDisplay();
+    });
+  });
+});
+
+
 
 //刷新地图的函数
 function updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue) {
@@ -333,21 +426,35 @@ function updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue) {
     return null;
   }).filter(item => item !== null);
 
-  // 准备航线数据
-  var linesData = routes.map(route => {
-    var fromCoord = geoCoordMap[route.from];
-    var toCoord = geoCoordMap[route.to];
-    if (fromCoord && toCoord) {
-      return {
-        fromName: route.from,
-        toName: route.to,
-        coords: [fromCoord, toCoord],
-        value: route.distance
-      };
-    }
-    return null;
-  }).filter(item => item !== null);
+// 准备航线数据
+var linesData = routes.map(route => {
+  var fromCoord = geoCoordMap[route.from];
+  var toCoord = geoCoordMap[route.to];
+  if (fromCoord && toCoord) {
+    // 根据 routeClass 设置不同的颜色
+    var classColorMap = {
+      "普通航线": "#000000", // 黑色
+      "断路航线": "#FF0000", // 红色
+      "绿色通道": "#00FF00"  // 绿色
+    };
+    var lineColor = classColorMap[route.routeClass] || lineColorValue; // 如果没有对应的 routeClass，则使用默认颜色
+    return {
+      fromName: route.from,
+      toName: route.to,
+      coords: [fromCoord, toCoord],
+      value: route.distance,
+      lineStyle: {
+        normal: {
+          color: lineColor
+        }
+      }
+    };
+  }
+  return null;
+}).filter(item => item !== null);
 
+  //清除旧图形用，不能删掉.
+  //清除旧的航线小飞机的拖尾特效。清图后不知道为什么这个特效会有残留，缩放一下页面有消失了。可能是这个地图js内部的bug。
   myChart.setOption({
     series: [{
       name: "temp",
@@ -375,11 +482,6 @@ function updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue) {
     itemStyle: {
       normal: {
         color: cityColorValue,  // 标记点颜色
-        // borderType: 'solid',
-        // borderColor: '#fff',  // 标记点边框颜色
-        // borderWidth: 1,
-        // shadowBlur: 10,  // 阴影模糊度
-        // shadowColor: 'rgba(0, 0, 0, 0.3)'  // 阴影颜色
       },
       emphasis: {
         areaColor: cityColorValue,
@@ -442,16 +544,6 @@ function updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue) {
         }
       }
     },
-    // legend: {
-    //   orient: "vertical",
-    //   top: "bottom",
-    //   left: "right",
-    //   data: ["西安 Top3", "西宁 Top3", "银川 Top3"],
-    //   textStyle: {
-    //     color: "#fff"
-    //   },
-    //   selectedMode: "multiple"
-    // },
     geo: {
       map: "china",
       label: {

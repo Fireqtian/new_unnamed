@@ -48,42 +48,56 @@
       <div class="column">
         <div class="panel bar">
           <h2>特快专递</h2>
-          <div class="input-container">
-            <label for="fromInput">起点城市:</label>
-            <input type="text" id="fromInput" placeholder="输入起点">
-            <br>
-            <label for="toInput">终点城市:</label>
-            <input type="text" id="toInput" placeholder="输入终点">
-            <button id="sendButton">确定</button>
+          <div class="no-user-features">
+            <h2> 该用户无此权限 </h2>
           </div>
-          <div id="totalDistance"></div>
+          <div class="user-features">
+            <div class="input-container">
+              <label for="fromInput">起点城市:</label>
+              <input type="text" id="fromInput" placeholder="输入起点">
+              <br>
+              <label for="toInput">终点城市:</label>
+              <input type="text" id="toInput" placeholder="输入终点">
+              <button id="sendButton">确定</button>
+            </div>
+            <div id="totalDistance"></div>
+          </div>
           <div class="chart"></div>
           <div class="panel-footer"></div>
         </div>
         <div class="panel line">
           <h2> 物资补给 </h2>
-          <!-- 物资补给 -->
-          <div class="input-container">
-            <label for="goodsCityInput">需求城市:</label>
-            <input type="text" id="goodsCityInput" placeholder="输入城市名称">
-            <br>
-            <label for="goodsTypeInput">物资种类:</label>
-            <input type="text" id="goodsTypeInput" placeholder="输入物资种类">
-            <button id="supplyButton">确定</button>
+          <div class="no-admin-features">
+            <h2> 该用户无此权限 </h2>
           </div>
-          <div id="supplySuccessMessage"></div>
+          <div class="admin-features">
+            <div class="input-container">
+              <label for="goodsCityInput">需求城市:</label>
+              <input type="text" id="goodsCityInput" placeholder="输入城市名称">
+              <br>
+              <label for="goodsTypeInput">物资种类:</label>
+              <input type="text" id="goodsTypeInput" placeholder="输入物资种类">
+              <button id="supplyButton">确定</button>
+            </div>
+            <div id="supplySuccessMessage"></div>
+          </div>
           <div class="chart"></div>
           <div class="panel-footer"></div>
         </div>
         <div class="panel pie">
           <h2>灾情上报</h2>
-          <div class="input-container">
-            <label for="goodsCityInput">起点城市:</label>
-            <input type="text" id="fromInput" placeholder="输入起点">
-            <br>
-            <label for="goodsTypeInput">终点城市:</label>
-            <input type="text" id="toInput" placeholder="输入终点">
-            <button id="disasterReportButton">确定</button>
+          <div class="no-admin-features">
+            <h2> 该用户无此权限 </h2>
+          </div>
+          <div class="admin-features">
+            <div class="input-container">
+              <label for="goodsCityInput">起点城市:</label>
+              <input type="text" id="fromInput" placeholder="输入起点">
+              <br>
+              <label for="goodsTypeInput">终点城市:</label>
+              <input type="text" id="toInput" placeholder="输入终点">
+              <button id="disasterReportButton">确定</button>
+            </div>
           </div>
           <div class="chart"></div>
           <div class="panel-footer"></div>
@@ -115,21 +129,35 @@
       </div>
       <div class="column">
         <div class="panel bar2">
-          <h2>模式切换</h2>
+          <h2>权限模式切换（非生产环境模拟实现）</h2>
+          <div class="input-container">
+            <input type="radio" id="user" name="mode" value="user">
+            <label for="user">普通用户</label><br>
+            <input type="radio" id="admin" name="mode" value="admin">
+            <label for="admin">物资管理员</label><br>
+            <input type="radio" id="leader" name="mode" value="leader">
+            <label for="leader">领导</label>
+          </div>
           <div class="chart"></div>
           <div class="panel-footer"></div>
         </div>
         <div class="panel line2">
           <h2>应急通道</h2>
-          <div class="input-container">
-            <label for="emergencyFromInput">起点城市:</label>
-            <input type="text" id="emergencyFromInput" placeholder="输入起点">
-            <br>
-            <label for="emergencyToInput">终点城市:</label>
-            <input type="text" id="emergencyToInput" placeholder="输入终点">
-            <button id="emergencyDispatchButton">确定</button>
+          <div class="no-leader-features">
+            <h2> 该用户无此权限 </h2>
           </div>
-          <div id="emergencySuccessMessage"></div>
+          <div class="leader-features">
+            <div class="input-container">
+              <label for="emergencyFromInput">起点城市:</label>
+              <input type="text" id="emergencyFromInput" placeholder="输入起点">
+              <br>
+              <label for="emergencyToInput">终点城市:</label>
+              <input type="text" id="emergencyToInput" placeholder="输入终点">
+              <button id="emergencyDispatchButton">确定</button>
+            </div>
+            <div id="emergencySuccessMessage"></div>
+          </div>
+          
           <div class="chart"></div>
           <div class="panel-footer"></div>
         </div>
