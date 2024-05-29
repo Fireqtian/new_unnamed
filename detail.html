@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>信息页面</title>
     <link rel="stylesheet" href="css/index.css"> <!-- 链接原有的CSS文件 -->
+    <script src="js/details.js"></script>
 </head>
 <body>
     <header>
@@ -41,13 +42,20 @@
         </script>
         &
       </header>
-    
-    <div class="content-wrapper"> <!-- 新页面内容的容器 -->
+      <section class="mainbox">
         <!-- 页面内容留空，待填充 -->
-        <div id="cityInfoContainer">
-            <!-- 城市信息将在这里显示 -->
+        <div class="cityInfoContainer">
+          <!-- 城市信息将在这里显示 -->
+          <!-- 在 detail.html 中添加这些元素 -->
+          <h1>城市详情</h1>
+          <p>城市: <span id="cityName"></span></p>
+          <p>纬度: <span id="latitude"></span></p>
+          <p>经度: <span id="longitude"></span></p>
+          <p>普通货物量: <span id="generalCargo"></span></p>
+          <p>特殊货物量: <span id="specialCargo"></span></p>
+          <div class="cityInfoContainer-footer"></div>
         </div>
-    </div>
+      </section>
 
     <script src="js/flexible.js"></script>
     <script src="js/echarts.min.js"></script>
@@ -55,7 +63,7 @@
     <script src="js/jquery.js"></script>
     <!-- 必须先引入china.js 这个文件 因为中国地图需要 -->
     <script src="js/china.js"></script>
-    <script src="js/index.js"></script>
+    <!-- <script src="js/index.js"></script> -->
 
     <!-- 背景和其他样式将从index.css继承 -->
 </body>

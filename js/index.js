@@ -119,7 +119,19 @@ var color = ["#a6c84c", "#ffa022", "#46bee9"]; //航线的颜色
 var planePath =
   "path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z";
 //var planePath = 'arrow';
-
+// 点击城市
+// 修改后的图表点击事件处理器
+myChart.on('click', function (params) {
+  if (params.seriesType === 'effectScatter') {
+    const city = params.name;
+    // 打开一个新的页面或弹出窗口，传递城市名称
+    const detailPageURL = `detail.html#${encodeURIComponent(city)}`;
+    const detailPageWindow = window.open(detailPageURL, '_blank');
+    console.log(city);
+    // 可选：如果需要在当前页面加载详情，可以移除上面的 open 行，并使用下面的行
+    // window.location.href = detailPageURL;
+  }
+});
 
 //特快专递
 (function() {
@@ -177,6 +189,7 @@ var planePath =
   var goodsCityInput = document.getElementById('goodsCityInput');
   var goodsTypeInput = document.getElementById('goodsTypeInput');
   var supplyButton = document.getElementById('supplyButton');
+  var supplySuccessMessage = document.getElementById('supplySuccessMessage'); // 新增的变量
 
   supplyButton.addEventListener('click', function() {
     var city = goodsCityInput.value;
@@ -206,6 +219,7 @@ var planePath =
       var lineColorValue = "#ffffff";
       // 更新地图的函数，这里假设与特快专递相同
       updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue); 
+      supplySuccessMessage.textContent = city + ' ' + goods + '补给成功'; // 新增的代码
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -255,6 +269,47 @@ var planePath =
   });
 })();
 
+
+// 应急通道
+(function() {
+  var emergencyFromInput = document.getElementById('emergencyFromInput');
+  var emergencyToInput = document.getElementById('emergencyToInput');
+  var emergencyDispatchButton = document.getElementById('emergencyDispatchButton');
+
+  emergencyDispatchButton.addEventListener('click', function() {
+    var fromCity = emergencyFromInput.value;
+    var toCity = emergencyToInput.value;
+
+    var data = {
+      from: fromCity,
+      to: toCity
+    };
+
+    fetch('https://run.mocky.io/v3/da278035-00be-4cfe-a488-2709351a2e62', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('网络响应错误');
+      }
+      return response.json();
+    })
+    .then(json => {
+      var routes = json.data;
+      var cityColorValue = "#00ff00"; // 绿色标记点颜色
+      var lineColorValue = "#00ff00"; // 绿色航线颜色
+      updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue);
+      emergencySuccessMessage.textContent = '应急通道建立成功'; 
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+})();
 
 
 
@@ -327,7 +382,8 @@ function updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue) {
         // shadowColor: 'rgba(0, 0, 0, 0.3)'  // 阴影颜色
       },
       emphasis: {
-        areaColor: cityColorValue
+        areaColor: cityColorValue,
+        silent: false // 允许事件冒泡
       },
       symbolSize: function(val) {
         return val[2] / 8;
@@ -339,7 +395,7 @@ function updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue) {
         position: "right",
         formatter: "{b}"
       }
-    }
+    },// 在这里添加点击事件的处理逻辑
   }, {
     name: 'Routes',
     type: 'lines',

@@ -49,8 +49,11 @@
         <div class="panel bar">
           <h2>特快专递</h2>
           <div class="input-container">
-            <input type="text" id="fromInput" placeholder="From City">
-            <input type="text" id="toInput" placeholder="To City">
+            <label for="fromInput">起点城市:</label>
+            <input type="text" id="fromInput" placeholder="输入起点">
+            <br>
+            <label for="toInput">终点城市:</label>
+            <input type="text" id="toInput" placeholder="输入终点">
             <button id="sendButton">确定</button>
           </div>
           <div id="totalDistance"></div>
@@ -61,13 +64,14 @@
           <h2> 物资补给 </h2>
           <!-- 物资补给 -->
           <div class="input-container">
-            <label for="goodsCityInput">城市:</label>
+            <label for="goodsCityInput">需求城市:</label>
             <input type="text" id="goodsCityInput" placeholder="输入城市名称">
             <br>
             <label for="goodsTypeInput">物资种类:</label>
             <input type="text" id="goodsTypeInput" placeholder="输入物资种类">
             <button id="supplyButton">确定</button>
           </div>
+          <div id="supplySuccessMessage"></div>
           <div class="chart"></div>
           <div class="panel-footer"></div>
         </div>
@@ -116,7 +120,16 @@
           <div class="panel-footer"></div>
         </div>
         <div class="panel line2">
-          <h2>应急调度</h2>
+          <h2>应急通道</h2>
+          <div class="input-container">
+            <label for="emergencyFromInput">起点城市:</label>
+            <input type="text" id="emergencyFromInput" placeholder="输入起点">
+            <br>
+            <label for="emergencyToInput">终点城市:</label>
+            <input type="text" id="emergencyToInput" placeholder="输入终点">
+            <button id="emergencyDispatchButton">确定</button>
+          </div>
+          <div id="emergencySuccessMessage"></div>
           <div class="chart"></div>
           <div class="panel-footer"></div>
         </div>

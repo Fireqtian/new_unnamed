@@ -45,12 +45,40 @@ header .showTime {
   font-size: 16px; /* 字体大小 */
 }
 
-#totalDistance {
+.input-container input {
+  border-radius: 5px; /* 输入框和按钮的边框圆角 */
+  box-shadow: none; /* 无阴影 */
+  border: none; /* 无边框 */
+}
+
+
+.input-container button {
+  border-radius: 5px; /* 输入框和按钮的边框圆角 */
+  background-color: rgba(173, 216, 230, 0.7); /* 按钮颜色为比背景更浅的蓝色 */
+  color: white; /* 按钮字体颜色为白色 */
+  border: 3px solid #2e65c9; /* 深蓝色边框 */
+  box-shadow: none; /* 无阴影 */
+  padding: 3px 3px; /* 内边距，使按钮适应文字大小 */
+}
+
+#totalDistance{
   color: #fff; /* 设置字体颜色为白色 */
   font-size: 14px; 
   margin-top: 10px; 
-
 }
+
+#supplySuccessMessage {
+  color: #fff; /* 设置字体颜色为白色 */
+  font-size: 14px; 
+  margin-top: 10px; 
+}
+
+#emergencySuccessMessage {
+  color: #fff; /* 设置字体颜色为白色 */
+  font-size: 14px; 
+  margin-top: 10px; 
+}
+
 .mainbox {
   display: flex;
   min-width: 1024px;
@@ -243,6 +271,92 @@ header .showTime {
   width: 100%;
   height: 10.125rem;
 }
+/* detail.html 的 CSS 样式 */
+
+.cityInfoContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 800px; /* 限制最大宽度 */
+  padding: 0.25rem; /* 内边距 */
+  border: 1px solid rgba(25, 186, 139, 0.17);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: #fff;
+  font-size: 0.275rem; /* 减小字体大小 */
+  line-height: 1.5;
+}
+
+.cityInfoContainer h2 {
+  margin: 0 0 1rem;
+  font-size: 0.275rem; /* 根据需要调整标题大小 */
+}
+
+.cityInfoContainer p {
+  margin: 0 0 0.5rem; /* 段落下边距 */
+  font-size: 0.275rem; /* 减小段落字体大小 */
+}
+
+/* 其他样式可以根据需要添加 */
+
+.cityInfoContainer::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #02a6b5;
+  border-top: 2px solid #02a6b5;
+  content: "";
+}
+
+.cityInfoContainer::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #02a6b5;
+  border-top: 2px solid #02a6b5;
+  content: "";
+}
+
+.cityInfoContainer .cityInfoContainer-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.cityInfoContainer .cityInfoContainer-footer::before {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #02a6b5;
+  border-bottom: 2px solid #02a6b5;
+  content: "";
+}
+
+.cityInfoContainer .cityInfoContainer-footer::after {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #02a6b5;
+  border-bottom: 2px solid #02a6b5;
+  content: "";
+}
+
+/* 左下角和右下角的装饰 */
+
+/* 其他样式可以根据需要添加 */
 @keyframes rotate1 {
   form {
     transform: translate(-50%, -50%) rotate(0deg);
