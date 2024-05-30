@@ -119,6 +119,40 @@ var color = ["#a6c84c", "#ffa022", "#46bee9"]; //航线的颜色
 var planePath =
   "path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z";
 //var planePath = 'arrow';
+var classColorMap = {
+  "普通航线": "#ffffff", 
+  "断路航线": "#FF0000", 
+  "绿色通道": "#c0ff60"  
+};
+
+
+//页面上面的数字
+(function () {
+  // 页面加载完成后发送 POST 请求
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch('https://run.mocky.io/v3/e1e16f90-f1c2-442c-9929-e174022277ed', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.data) {
+        // 使用获取到的数据更新页面
+        document.getElementById('plotCount').textContent = data.data.plots;
+        document.getElementById('routeCount').textContent = data.data.routes;
+      } else {
+        console.error('Failed to fetch plot and route counts:', data);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  });
+})();
+
+
 // 点击城市
 // 修改后的图表点击事件处理器
 myChart.on('click', function (params) {
@@ -134,21 +168,21 @@ myChart.on('click', function (params) {
 });
 
 //特快专递
-(function() {
+(function () {
   var fromInput = document.getElementById('fromInput');
   var toInput = document.getElementById('toInput');
   var sendButton = document.getElementById('sendButton');
   var totalDistanceDisplay = document.getElementById('totalDistance');
 
-  sendButton.addEventListener('click', function() {
+  sendButton.addEventListener('click', function () {
     var fromCity = fromInput.value;
     var toCity = toInput.value;
-  
+
     var data = {
       from: fromCity,
       to: toCity
     };
-  
+
     fetch('https://run.mocky.io/v3/c9304522-8e77-43ff-97bb-32844bab1bf3', {
       method: 'POST',
       headers: {
@@ -156,27 +190,27 @@ myChart.on('click', function (params) {
       },
       body: JSON.stringify(data), // 确保发送的是JSON字符串
     })
-    .then(response => {
-      // 检查响应状态
-      if (!response.ok) {
-        throw new Error('网络响应错误');
-      }
-      return response.json();
-    })
-    .then(json => {
-      var routes = json.data;
-      var totalDistance = routes.reduce((total, route) => {
-        return total + route.distance;
-      }, 0); // 计算总距离
-      var cityColorValue = "#ffa060";
-      var lineColorValue = "#ffffff";
-      // 更新地图
-      updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue); 
-      displayTotalDistance(totalDistance); // 显示总距离
-    })
-    .catch((error) => {
-      console.error('Error:', error); // 打印错误信息
-    });
+      .then(response => {
+        // 检查响应状态
+        if (!response.ok) {
+          throw new Error('网络响应错误');
+        }
+        return response.json();
+      })
+      .then(json => {
+        var routes = json.data;
+        var totalDistance = routes.reduce((total, route) => {
+          return total + route.distance;
+        }, 0); // 计算总距离
+        var cityColorValue = "#ffa060";
+        var lineColorValue = "#ffffff";
+        // 更新地图
+        updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue);
+        displayTotalDistance(totalDistance); // 显示总距离
+      })
+      .catch((error) => {
+        console.error('Error:', error); // 打印错误信息
+      });
   });
 
   function displayTotalDistance(distance) {
@@ -185,13 +219,13 @@ myChart.on('click', function (params) {
 })();
 
 //物资补给
-(function() {
+(function () {
   var goodsCityInput = document.getElementById('goodsCityInput');
   var goodsTypeInput = document.getElementById('goodsTypeInput');
   var supplyButton = document.getElementById('supplyButton');
   var supplySuccessMessage = document.getElementById('supplySuccessMessage'); // 新增的变量
 
-  supplyButton.addEventListener('click', function() {
+  supplyButton.addEventListener('click', function () {
     var city = goodsCityInput.value;
     var goods = goodsTypeInput.value;
 
@@ -207,35 +241,35 @@ myChart.on('click', function (params) {
       },
       body: JSON.stringify(data), // 发送JSON字符串
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('网络响应错误');
-      }
-      return response.json();
-    })
-    .then(json => {
-      var routes = json.data;
-      var cityColorValue = "#c0ff60";
-      var lineColorValue = "#ffffff";
-      // 更新地图的函数，这里假设与特快专递相同
-      updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue); 
-      supplySuccessMessage.textContent = city + ' ' + goods + '补给成功'; // 新增的代码
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('网络响应错误');
+        }
+        return response.json();
+      })
+      .then(json => {
+        var routes = json.data;
+        var cityColorValue = "#c0ff60";
+        var lineColorValue = "#ffffff";
+        // 更新地图的函数，这里假设与特快专递相同
+        updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue);
+        supplySuccessMessage.textContent = city + ' ' + goods + '补给成功'; // 新增的代码
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   });
 })();
 
 
 
 // 灾害上报功能
-(function() {
+(function () {
   var disasterFromInput = document.getElementById('fromInput');
   var disasterToInput = document.getElementById('toInput');
   var disasterReportButton = document.getElementById('disasterReportButton');
-  
-  disasterReportButton.addEventListener('click', function() {
+
+  disasterReportButton.addEventListener('click', function () {
     var fromCity = disasterFromInput.value;
     var toCity = disasterToInput.value;
 
@@ -251,32 +285,32 @@ myChart.on('click', function (params) {
       },
       body: JSON.stringify(data),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('网络响应错误');
-      }
-      return response.json();
-    })
-    .then(json => {
-      var routes = json.data;
-      var cityColorValue = "#ff0000"; // 红色标记点颜色
-      var lineColorValue = "#ff0000"; // 红色航线颜色
-      updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('网络响应错误');
+        }
+        return response.json();
+      })
+      .then(json => {
+        var routes = json.data;
+        var cityColorValue = "#ff0000"; // 红色标记点颜色
+        var lineColorValue = "#ff0000"; // 红色航线颜色
+        updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   });
 })();
 
 
 // 应急通道
-(function() {
+(function () {
   var emergencyFromInput = document.getElementById('emergencyFromInput');
   var emergencyToInput = document.getElementById('emergencyToInput');
   var emergencyDispatchButton = document.getElementById('emergencyDispatchButton');
 
-  emergencyDispatchButton.addEventListener('click', function() {
+  emergencyDispatchButton.addEventListener('click', function () {
     var fromCity = emergencyFromInput.value;
     var toCity = emergencyToInput.value;
 
@@ -292,27 +326,27 @@ myChart.on('click', function (params) {
       },
       body: JSON.stringify(data),
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('网络响应错误');
-      }
-      return response.json();
-    })
-    .then(json => {
-      var routes = json.data;
-      var cityColorValue = "#00ff00"; // 绿色标记点颜色
-      var lineColorValue = "#00ff00"; // 绿色航线颜色
-      updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue);
-      emergencySuccessMessage.textContent = '应急通道建立成功'; 
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('网络响应错误');
+        }
+        return response.json();
+      })
+      .then(json => {
+        var routes = json.data;
+        var cityColorValue = "#00ff00"; // 绿色标记点颜色
+        var lineColorValue = "#00ff00"; // 绿色航线颜色
+        updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue);
+        emergencySuccessMessage.textContent = '应急通道建立成功';
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   });
 })();
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   var modeInputs = document.querySelectorAll('input[name="mode"]');
   var features = {
     user: document.querySelectorAll('.user-features'),
@@ -329,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var savedMode = sessionStorage.getItem('selectedMode') || 'user';
 
   // 默认选中'user'模式，并更新界面
-  modeInputs.forEach(function(input) {
+  modeInputs.forEach(function (input) {
     if (input.value === savedMode) {
       input.checked = true;
     }
@@ -340,62 +374,62 @@ document.addEventListener('DOMContentLoaded', function() {
     // 首先获取当前选中的模式
     var modeInputs = document.querySelectorAll('input[name="mode"]');
     var currentMode = 'user'; // 默认模式为 'user'
-    modeInputs.forEach(function(input) {
+    modeInputs.forEach(function (input) {
       if (input.checked) {
         currentMode = input.value;
       }
     });
-  
+
     // 隐藏所有功能和提示
     for (var key in features) {
-      features[key].forEach(function(feature) {
+      features[key].forEach(function (feature) {
         feature.style.display = 'none';
       });
     }
     for (var key in noFeatureHints) {
-      noFeatureHints[key].forEach(function(hint) {
+      noFeatureHints[key].forEach(function (hint) {
         hint.style.display = 'block';
       });
     }
-  
+
     // 根据当前选中的模式显示相应的功能，并隐藏对应的noFeatureHint提示
     switch (currentMode) {
       case 'user':
-        noFeatureHints.user.forEach(function(hint) { hint.style.display = 'none'; });
-        features.user.forEach(function(userFeature) {
+        noFeatureHints.user.forEach(function (hint) { hint.style.display = 'none'; });
+        features.user.forEach(function (userFeature) {
           userFeature.style.display = 'block';
         });
         break;
       case 'admin':
-        noFeatureHints.user.forEach(function(hint) { hint.style.display = 'none'; });
-        noFeatureHints.admin.forEach(function(hint) { hint.style.display = 'none'; });
-        features.user.forEach(function(userFeature) {
+        noFeatureHints.user.forEach(function (hint) { hint.style.display = 'none'; });
+        noFeatureHints.admin.forEach(function (hint) { hint.style.display = 'none'; });
+        features.user.forEach(function (userFeature) {
           userFeature.style.display = 'block';
         });
-        features.admin.forEach(function(adminFeature) {
+        features.admin.forEach(function (adminFeature) {
           adminFeature.style.display = 'block';
         });
         break;
       case 'leader':
-        noFeatureHints.user.forEach(function(hint) { hint.style.display = 'none'; });
-        noFeatureHints.admin.forEach(function(hint) { hint.style.display = 'none'; });
-        noFeatureHints.leader.forEach(function(hint) { hint.style.display = 'none'; });
-        features.user.forEach(function(userFeature) {
+        noFeatureHints.user.forEach(function (hint) { hint.style.display = 'none'; });
+        noFeatureHints.admin.forEach(function (hint) { hint.style.display = 'none'; });
+        noFeatureHints.leader.forEach(function (hint) { hint.style.display = 'none'; });
+        features.user.forEach(function (userFeature) {
           userFeature.style.display = 'block';
         });
-        features.admin.forEach(function(adminFeature) {
+        features.admin.forEach(function (adminFeature) {
           adminFeature.style.display = 'block';
         });
-        features.leader.forEach(function(leaderFeature) {
+        features.leader.forEach(function (leaderFeature) {
           leaderFeature.style.display = 'block';
         });
         break;
     }
   }
-  
+
   // 监听模式切换
-  modeInputs.forEach(function(input) {
-    input.addEventListener('change', function() {
+  modeInputs.forEach(function (input) {
+    input.addEventListener('change', function () {
       // 更新sessionStorage
       sessionStorage.setItem('selectedMode', this.value);
       // 更新界面
@@ -426,32 +460,41 @@ function updateMapWithCitiesAndRoutes(routes, cityColorValue, lineColorValue) {
     return null;
   }).filter(item => item !== null);
 
-// 准备航线数据
-var linesData = routes.map(route => {
-  var fromCoord = geoCoordMap[route.from];
-  var toCoord = geoCoordMap[route.to];
-  if (fromCoord && toCoord) {
-    // 根据 routeClass 设置不同的颜色
-    var classColorMap = {
-      "普通航线": "#000000", // 黑色
-      "断路航线": "#FF0000", // 红色
-      "绿色通道": "#00FF00"  // 绿色
-    };
-    var lineColor = classColorMap[route.routeClass] || lineColorValue; // 如果没有对应的 routeClass，则使用默认颜色
-    return {
-      fromName: route.from,
-      toName: route.to,
-      coords: [fromCoord, toCoord],
-      value: route.distance,
-      lineStyle: {
-        normal: {
-          color: lineColor
+  // 准备航线数据
+  var linesData = routes.map(route => {
+    var fromCoord = geoCoordMap[route.from];
+    var toCoord = geoCoordMap[route.to];
+    if (fromCoord && toCoord) {
+      // 根据 routeClass 设置不同的颜色
+      var lineColor = classColorMap[route.routeClass] || lineColorValue; // 如果没有对应的 routeClass，则使用默认颜色
+
+      return {
+        fromName: route.from,
+        toName: route.to,
+        coords: [fromCoord, toCoord],
+        value: route.distance,
+        lineStyle: {
+          normal: {
+            color: lineColor
+          }
         }
-      }
-    };
-  }
-  return null;
-}).filter(item => item !== null);
+      };
+    }
+    return null;
+  }).filter(item => item !== null);
+
+  var tailsData = routes.map(route => {
+    var fromCoord = geoCoordMap[route.from];
+    var toCoord = geoCoordMap[route.to];
+    if (fromCoord && toCoord) {
+      return {
+        fromName: route.from,
+        toName: route.to,
+        coords: [fromCoord, toCoord]
+      };
+    }
+    return null;
+  }).filter(item => item !== null);
 
   //清除旧图形用，不能删掉.
   //清除旧的航线小飞机的拖尾特效。清图后不知道为什么这个特效会有残留，缩放一下页面有消失了。可能是这个地图js内部的bug。
@@ -462,7 +505,7 @@ var linesData = routes.map(route => {
       coordinateSystem: 'geo',
       data: [] // 清空旧的散点数据
     }
-  ]
+    ]
   });
 
   // 清除所有图形和动画
@@ -487,7 +530,7 @@ var linesData = routes.map(route => {
         areaColor: cityColorValue,
         silent: false // 允许事件冒泡
       },
-      symbolSize: function(val) {
+      symbolSize: function (val) {
         return val[2] / 8;
       },
     },
@@ -501,6 +544,7 @@ var linesData = routes.map(route => {
   }, {
     name: 'Routes',
     type: 'lines',
+    zlevel: 2,
     coordinateSystem: 'geo', // 指定使用地理坐标系
     data: linesData,
     lineStyle: {
@@ -523,12 +567,31 @@ var linesData = routes.map(route => {
         width: 3 // 鼠标悬浮时航线的宽度
       }
     }
+  }, {
+    name: "tails",
+    type: "lines",
+    zlevel: 1,
+    data:tailsData,
+    effect: {
+      show: true,
+      period: 6,
+      trailLength: 0.7,
+      color: lineColorValue, //arrow箭头的颜色
+      symbolSize: 3
+    },
+    lineStyle: {
+      normal: {
+        color: lineColorValue,
+        width: 0,
+        curveness: 0.2
+      }
+    },
   }]
 
   var option = {
     tooltip: {
       trigger: "item",
-      formatter: function(params, ticket, callback) {
+      formatter: function (params, ticket, callback) {
         if (params.seriesType == "effectScatter") {
           return "线路：" + params.data.name + "" + params.data.value[2];
         } else if (params.seriesType == "lines") {
@@ -576,7 +639,7 @@ var linesData = routes.map(route => {
 }
 
 // 模拟飞行路线模块地图模块
-(function() {
+(function () {
   //var myChart = echarts.init(document.querySelector(".map .chart"));
 
   var XAData = [
@@ -607,7 +670,7 @@ var linesData = routes.map(route => {
   var planePath =
     "path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z";
   //var planePath = 'arrow';
-  var convertData = function(data) {
+  var convertData = function (data) {
     var res = [];
     for (var i = 0; i < data.length; i++) {
       var dataItem = data[i];
@@ -632,7 +695,7 @@ var linesData = routes.map(route => {
     ["西安", XAData],
     ["西宁", XNData],
     ["银川", YCData]
-  ].forEach(function(item, i) {
+  ].forEach(function (item, i) {
     series.push(
       {
         //name: item[0] + " Top3",
@@ -695,7 +758,7 @@ var linesData = routes.map(route => {
             formatter: "{b}"
           }
         },
-        symbolSize: function(val) {
+        symbolSize: function (val) {
           return val[2] / 8;
         },
         itemStyle: {
@@ -706,7 +769,7 @@ var linesData = routes.map(route => {
             areaColor: "#2B91B7"
           }
         },
-        data: item[1].map(function(dataItem) {
+        data: item[1].map(function (dataItem) {
           return {
             name: dataItem[1].name,
             value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
@@ -718,7 +781,7 @@ var linesData = routes.map(route => {
   var option = {
     tooltip: {
       trigger: "item",
-      formatter: function(params, ticket, callback) {
+      formatter: function (params, ticket, callback) {
         if (params.seriesType == "effectScatter") {
           return "线路：" + params.data.name + "" + params.data.value[2];
         } else if (params.seriesType == "lines") {
@@ -771,7 +834,7 @@ var linesData = routes.map(route => {
   };
   myChart.setOption(option);
   // 监听浏览器缩放，图表对象调用缩放resize函数
-  window.addEventListener("resize", function() {
+  window.addEventListener("resize", function () {
     myChart.resize();
   });
 })();
